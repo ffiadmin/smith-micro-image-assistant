@@ -1,3 +1,5 @@
 Monitor icon: http://findicons.com/icon/198152/display
 Check icon: https://www.iconfinder.com/icondetails/32133/128/ball_check_icon
 X icon: https://www.iconfinder.com/icondetails/32141/128/close_icon
+
+WGET for Windows: http://users.ugent.be/~bpuype/wget/

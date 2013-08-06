@@ -16,7 +16,7 @@ Gui, Add, Text, backgroundTrans vSetupText w400 x20 y120, Below is a listing of 
 
 ; Operating system name input
 Gui, Add, Text, backgroundTrans vOSNameText w400 x20 y180, OS Name:
-Gui, Add, DropDownList, vOSNameInput w310 x110 y178, Windows 7||
+Gui, Add, DropDownList, vOSNameInput w310 x110 y178, Windows 8||
 
 ; Operating system type input, 32 or 64-bit
 Gui, Add, Text, backgroundTrans vOSTypeText w400 x20 y220, OS Type:
@@ -69,9 +69,24 @@ IfMsgBox, Yes
 	GuiControl, Hide, TimeZoneInput
 	
 	GuiControl, Hide, SetupBtn
+	
+; Move onto the next step
+	line = 3
+	
+; Create the AHK directory to store configuration and batch files
+	FileRemoveDir, %BaseDir%, 1
+	FileCreateDir, %BaseDir%
+	FileCreateDir, %BatchDir%
+	FileCreateDir, %DownloadDir%
+	log("Preliminary", "Created program directories")
+	
+; Copy the batch files from the "assets" directory to the AHK directory
+	FileCopyDir, assets\batch, %BatchDir%, 1
+	log("Preliminary", "Copied supporting batch files from the assets directory")
 
-; Create a text file to save all of the contents of this page
+; Create a DB file to save all of the contents of this page
 	FileDelete, %ConfigFileLoc%
 	FileAppend, 3`n1`n1`n%OSNameInput%`n%OSTypeInput%`n%OSKeyInput%`n%TimeZoneInput%, %ConfigFileLoc%
+	log("Preliminary", "Created program database file")
 } else
 	return

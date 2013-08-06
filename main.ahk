@@ -1,14 +1,12 @@
 #SingleInstance Force
 #Include config.ahk
 #Include lib.ahk
-;http://www.autohotkey.com/board/topic/91110-change-progress-bar-color/
-;http://www.autohotkey.com/board/topic/9036-how-do-i-embed-a-picture-into-my-exe-file/
 
 ; Ensure that this program is being run as the administrator
-;if (!A_IsAdmin) {
-;	Run *RunAs %A_ScriptFullPath%
-;	ExitApp
-;}
+if (!A_IsAdmin) {
+	Run *RunAs %A_ScriptFullPath%
+	ExitApp
+}
 
 ; Gather information from the program configuration file
 line := fetchStep()
@@ -18,7 +16,7 @@ Gui, -SysMenu
 
 ; Create the header
 Gui, Add, Progress, background333333 disabled h56 w440 x0 y0
-Gui, Add, Picture, h31 w33 x15 y13, icon-large.jpg
+Gui, Add, Picture, h31 w33 x15 y13, assets/images/icon-large.jpg
 Gui, Font, cWhite s12 w100, Verdana
 Gui, Add, Text, backgroundTrans x65 y19, %AppName%
 
@@ -46,14 +44,12 @@ Gui, Color, %BackgroundColor%
 Gui, Show, center h762 w440, %AppName%
 
 ; Load the Start page
-if (line = "1") {
+if (line = "1")
 	#Include start.ahk
-}
 
 ; Load the Setup page
-if (line = "2") {
+if (line = "2")
 	#Include setup.ahk
-}
 
 ; Load the Administrator page and macro script
 if (line = "3") {
