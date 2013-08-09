@@ -23,14 +23,14 @@ Gui, Add, Progress, backgroundCCCCCC disabled h200 w440 x0 y570
 Gui, Add, Text, backgroundTrans vAdminText w400 x20 y120, This program will now set up the administrator account.`n`nWhile the program is running, DO NOT:`n`n`n         Move the mouse.`n`n         Press the keyboard buttons.`n`n         Power off or unplug the machine.`n`n         Unplug the Ethernet cable.`n`n`n`While the program is running, it may sound an alarm to:`n`n`n         Prompt you to log in as qauser or the standard           user after a restart.`n`n         Notify you that the program is finished.
 
 ; Add the "X" icons beside the first four unordered list items
-Gui, Add, Picture, h21 vRedX6 w21 x35 y229, x.jpg
-Gui, Add, Picture, h21 vRedX7 w21 x35 y265, x.jpg
-Gui, Add, Picture, h21 vRedX8 w21 x35 y301, x.jpg
-Gui, Add, Picture, h21 vRedX9 w21 x35 y337, x.jpg
+Gui, Add, Picture, h21 vRedX6 w21 x35 y229, assets/images/x.jpg
+Gui, Add, Picture, h21 vRedX7 w21 x35 y265, assets/images/x.jpg
+Gui, Add, Picture, h21 vRedX8 w21 x35 y301, assets/images/x.jpg
+Gui, Add, Picture, h21 vRedX9 w21 x35 y337, assets/images/x.jpg
 
 ; Add the check mark icons beside the last two unordered list items
-Gui, Add, Picture, h21 vCheck6 w21 x35 y463, check.jpg
-Gui, Add, Picture, h21 vCheck7 w21 x35 y515, check.jpg
+Gui, Add, Picture, h21 vCheck6 w21 x35 y463, assets/images/check.jpg
+Gui, Add, Picture, h21 vCheck7 w21 x35 y515, assets/images/check.jpg
 
 ; Display the time out before the macro begins
 Gui, Font, c333333 s12 w600, Verdana

@@ -10,6 +10,7 @@ if (!A_IsAdmin) {
 
 ; Gather information from the program configuration file
 line := fetchStep()
+activationKey := fetchOSKey()
 
 ; Create the GUI Object
 Gui, -SysMenu
@@ -44,12 +45,14 @@ Gui, Color, %BackgroundColor%
 Gui, Show, center h762 w440, %AppName%
 
 ; Load the Start page
-if (line = "1")
+if (line = "1") {
 	#Include start.ahk
+}
 
 ; Load the Setup page
-if (line = "2")
+if (line = "2") {
 	#Include setup.ahk
+}
 
 ; Load the Administrator page and macro script
 if (line = "3") {

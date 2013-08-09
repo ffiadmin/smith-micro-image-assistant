@@ -1,4 +1,12 @@
 ; Hide the GUI and begin the macro script
 Gui, Hide
 
-TrayTip, Step 1 of 37, Activating Windows..., 20000, 1
+;;
+; Step 1 - Activate Windows
+; --------------------------------------
+;
+
+;RunWait, slmgr /upk
+log("1", "Uninstalled product key")
+MsgBox, slmgr /ipk %activationKey%
+log("1", "Installed product key and activated Windows")
