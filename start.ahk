@@ -52,4 +52,4 @@ GuiControl, Hide, RedX5
 GuiControl, Hide, StartBtn
 
 ; Move onto the next step
-line = 2
+step = 2

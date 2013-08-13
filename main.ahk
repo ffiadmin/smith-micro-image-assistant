@@ -9,8 +9,13 @@ if (!A_IsAdmin) {
 }
 
 ; Gather information from the program configuration file
-line := fetchStep()
-activationKey := fetchOSKey()
+step := fetchStep()
+adminStep := fetchAdminStep()
+standardStep := fetchStdStep()
+OSName := fetchOSName()
+OSType := fetchOSType()
+OSKey := fetchOSKey()
+timeZone := fetchTimeZone()
 
 ; Create the GUI Object
 Gui, -SysMenu
@@ -44,18 +49,79 @@ Gui, Add, Progress, backgroundCCCCCC disabled h56 w440 x0 y710
 Gui, Color, %BackgroundColor%
 Gui, Show, center h762 w440, %AppName%
 
+; Get ready to execute the inspector
+tracking = 0
+SetTimer, WatchCursor, 10
+
 ; Load the Start page
-if (line = "1") {
+Step1:
+if (step = 1) {
 	#Include start.ahk
+	GoSub, Step2
+	return
 }
 
 ; Load the Setup page
-if (line = "2") {
+Step2:
+if (step = 2) {
 	#Include setup.ahk
+	GoSub, Step3
+	return
 }
 
 ; Load the Administrator page and macro script
-if (line = "3") {
+Step3:
+if (step = "3") {
 	#Include administrator-gui.ahk
 	#Include administrator-macro.ahk
 }
+
+; Toggle the cursor inspector
+#I::
+	if (tracking = 1) {
+		tracking = 0
+	} else {
+		tracking = 1
+	}
+return
+
+; Display a tooltip, following the cursor, with its coordinates
+WatchCursor:
+	if (tracking = 1) {
+	; Screen position
+		CoordMode, Mouse, Screen
+		MouseGetPos, ScrX, ScrY
+	
+	; Window position
+		CoordMode, Mouse, Relative
+		MouseGetPos, WinX, WinY
+		
+	; Window top-center position
+		CoordMode, Mouse, Relative
+		WinGetPos, , , Width, Height, A
+		MouseGetPos, MouseX, MouseY
+		
+		TCMouseX := MouseX - Round(Width / 2)
+		TCMouseY := MouseY
+		
+	; Window top-right position
+		TRMouseX := Width - MouseX
+		TRMouseY := MouseY
+		
+	; Window bottom-left position
+		BLMouseX := MouseX
+		BLMouseY := Height - MouseY
+		
+	; Window bottom-center position
+		BCMouseX := MouseX - Round(Width / 2)
+		BCMouseY := Height - MouseY
+		
+	; Window bottom-right position
+		BRMouseX := Width - MouseX
+		BRMouseY := Height - MouseY
+		
+		ToolTip, Screen                  X: %ScrX% Y: %ScrY%`nWindow               X: %WinX% Y: %WinY%`nTop Center          X: %TCMouseX% Y: %TCMouseY%`nTop Right             X: %TRMouseX% Y: %TRMouseY%`nBottom Left         X: %BLMouseX% Y: %BLMouseY%`nBottom Center    X: %BCMouseX% Y: %BCMouseY%`nBottom Right       X: %BRMouseX% Y: %BRMouseY%
+	} else {
+		ToolTip
+	}
+return

@@ -100,6 +100,87 @@ fetchTimeZone() {
 		FileReadLine, line, %ConfigFileLoc%, 7
 		return line
 	} else {
-		return 
+		return "Eastern Standard Time"
 	}
+}
+
+; Update an entry in the database file
+updateLine(lineNum, value) {
+	global ConfigFileLoc
+	
+	line = 
+
+	Loop, Read, %ConfigFileLoc%
+	{
+		if (A_Index = lineNum) {
+			line .= value . "`n"
+		} else {
+			line .= A_LoopReadLine . "`n"
+		}
+	}
+	
+	StringTrimRight, contents, line, 1
+	FileDelete, %ConfigFileLoc%
+	FileAppend, %contents%, %ConfigFileLoc%
+}
+
+; MouseMove with the origin set to the left-top of the active window
+mouseMoveLT(X, Y) {
+	CoordMode, Mouse, Relative
+	MouseMove, X, Y 
+}
+
+; MouseMove with the origin set to the center-top of the active window
+mouseMoveCT(X, Y) {
+	CoordMode, Mouse, Relative
+	WinGetPos, , , Width, , A
+	
+	half := Round(Width / 2)
+	MoveX := Width - (half - X)
+	
+	MouseMove, MoveX, Y 
+}
+
+; MouseMove with the origin set to the right-top of the active window
+mouseMoveRT(X, Y) {
+	CoordMode, Mouse, Relative
+	WinGetPos, , , Width, , A
+	
+	MoveX := Width - X
+	
+	MouseMove, MoveX, Y 
+}
+
+; MouseMove with the origin set to the left-bottom of the active window
+mouseMoveLB(X, Y) {
+	CoordMode, Mouse, Relative
+	WinGetPos, , , , Height, A
+	
+	MoveY := Height - Y
+	
+	MouseMove, X, MoveY
+}
+
+; MouseMove with the origin set to the center-bottom of the active window
+mouseMoveCB(X, Y) {
+	CoordMode, Mouse, Relative
+	WinGetPos, , , Width, Height, A
+	
+	half := Round(Width / 2)
+	MoveX := Width - (half - X)
+	MoveY := Height - Y
+	
+	MouseMove, MoveX, MoveY
+}
+
+; MouseMove with the origin set to the right-bottom of the active window
+mouseMoveRB(X, Y) {
+	CoordMode, Mouse, Relative
+	WinGetPos, , , Width, Height, A
+	
+	half := Round(Width / 2)
+	MoveX := Width - X
+	MoveY := Height - Y
+	
+	MouseMove, MoveX, MoveY
 }

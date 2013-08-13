@@ -71,7 +71,7 @@ IfMsgBox, Yes
 	GuiControl, Hide, SetupBtn
 	
 ; Move onto the next step
-	line = 3
+	step = 3
 	
 ; Create the AHK directory to store configuration and batch files
 	FileRemoveDir, %BaseDir%, 1
@@ -83,10 +83,22 @@ IfMsgBox, Yes
 ; Copy the batch files from the "assets" directory to the AHK directory
 	FileCopyDir, assets\batch, %BatchDir%, 1
 	log("Preliminary", "Copied supporting batch files from the assets directory")
+	
+; Copy the theme files from the "theme" directory to the AHK directory
+	FileCopyDir, assets\theme, %ThemeDir%, 1
+	log("Preliminary", "Copied theme files from the assets directory")
 
 ; Create a DB file to save all of the contents of this page
 	FileDelete, %ConfigFileLoc%
 	FileAppend, 3`n1`n1`n%OSNameInput%`n%OSTypeInput%`n%OSKeyInput%`n%TimeZoneInput%, %ConfigFileLoc%
 	log("Preliminary", "Created program database file")
+
+; Share the data with the application
+	adminStep = 1
+	standardStep = 1
+	OSName := OSNameInput
+	OSType := OSTypeInput
+	OSKey := OSKeyInput
+	timeZone := TimeZoneInput
 } else
 	return
