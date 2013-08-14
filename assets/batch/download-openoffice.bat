@@ -1,0 +1,1 @@
+C:\AHK\batch\wget.exe -O C:\AHK\downloads\openoffice.exe http://sourceforge.net/projects/openofficeorg.mirror/files/4.0.0/binaries/en-US/Apache_OpenOffice_4.0.0_Win_x86_install_en-US.exe/download

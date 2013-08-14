@@ -136,7 +136,8 @@ if (adminStep = 6) {
 	Sleep, 1000
 	
 	Send, %BatchDir%\shortcut.exe /F:"%AppData%\Microsoft\Windows\Start Menu\Programs\Shutdown.lnk" /A:c /T:"shutdown" /P:"/s /t 0" /I:"%SystemRoot%\system32\SHELL32.dll,27"
-	Send {Enter}
+	Sleep, 3000
+	Send, {Enter}
 	log("6", "Added a Shutdown icon to the Start Screen")
 	
 	Process, Close, %PID%
@@ -156,7 +157,8 @@ if (adminStep = 7) {
 	Sleep, 1000
 	
 	Send, %BatchDir%\shortcut.exe /F:"%AppData%\Microsoft\Windows\Start Menu\Programs\Restart.lnk" /A:c /T:"shutdown" /P:"/r /t 0" /I:"%SystemRoot%\system32\SHELL32.dll,238"
-	Send {Enter}
+	Sleep, 3000
+	Send, {Enter}
 	log("7", "Added a Restart icon to the Start Screen")
 	
 	Process, Close, %PID%
@@ -331,8 +333,8 @@ if (adminStep = 11) {
 ; --------------------------------------
 ;
 
-if (adminStep = 12) {	
-	RunWait, %BatchDir%\wget.exe -O ..\downloads\openoffice.exe http://sourceforge.net/projects/openofficeorg.mirror/files/4.0.0/binaries/en-US/Apache_OpenOffice_4.0.0_Win_x86_install_en-US.exe/download
+if (adminStep = 12) {
+	RunWait, %BatchDir%\download-openoffice.bat
 	log("12", "Downloaded OpenOffice")
 	Sleep, 1000
 	
