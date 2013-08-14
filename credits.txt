@@ -3,3 +3,5 @@ Check icon: https://www.iconfinder.com/icondetails/32133/128/ball_check_icon
 X icon: https://www.iconfinder.com/icondetails/32141/128/close_icon
 
 WGET for Windows: http://users.ugent.be/~bpuype/wget/
+Shortcut.exe: http://optimumx.com/downloads.html
+WUInstall.exe: http://www.wuinstall.com/index.php/en

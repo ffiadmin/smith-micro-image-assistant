@@ -1,0 +1,1 @@
+start /wait msiexec /qr /norestart /i C:\AHK\downloads\openoffice\openoffice400.msi SETUP_USED=1 SELECT_WORD=1 ADDLOCAL=ALL REMOVE=gm_p_Calc,gm_p_Calc_Bin,gm_p_Calc_Addins,gm_p_Draw,gm_p_Draw_Bin,gm_p_Impress,gm_p_Impress_Bin,gm_p_Base,gm_p_Base_Bin,gm_p_Math,gm_p_Math_Bin,gm_o_Quickstart

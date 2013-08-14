@@ -211,7 +211,146 @@ if (adminStep = 8) {
 
 if (adminStep = 9) {
 	RunWait, %BatchDir%\windows-defender-update-and-scan.bat
+	log("9", "Updated Windows Defender and ran a full scan")
 	
 	adminStep = 10
+	updateLine(2, adminStep)
+}
+
+;;
+; Step 10 - Change Windows Update Settings
+; --------------------------------------
+;
+
+if (adminStep = 10) {
+	Run, control /name Microsoft.WindowsUpdate
+	Sleep, 1000
+	
+	MouseMoveLT(100, 150)
+	Click
+	Sleep, 500
+	
+	Loop, 3 {
+		Send, {Tab}
+	}
+	
+	Loop, 5 {
+		Send, {Down}
+	}
+	
+	Send, {Up}
+	
+	Loop, 3 {
+		Send, {Tab}
+	}
+	
+	Send, {Enter}
+	log("10", "Updated Windows Update settings")
+	
+	Send, !{F4}
+	Sleep, 1000
+	
+	adminStep = 11
+	updateLine(2, adminStep)
+}
+
+;;
+; Step 11 - Perform a Windows Update
+; --------------------------------------
+;
+
+if (adminStep = 11) {	
+; ErrorLevel will contain the return codes from WUInstall.exe mentioned here: help.wuinstall.com/en/ReturnCodes.html
+	Loop {
+		RunWait, %BatchDir%\WUInstall.exe /install, , UseErrorLevel
+		Sleep, 1000
+	
+		if (ErrorLevel = 0) {           ; Successful, no reboot required
+			log("11", "Successfully installed Windows Updates, no reboot was required")
+		} else if (ErrorLevel = 1) {    ; At least one error occurred, no reboot required
+			log("11", "Installed Windows Updates with at least one error, no reboot was required")
+			SoundBeep, 750, 1500
+			MsgBox, Your computer encountered at least one error while installing Windows Updates. The program will attempt to install them again.
+		} else if (ErrorLevel = 2) {    ; No more updates available
+			log("11", "Finished installing Windows Updates")
+			break
+		} else if (ErrorLevel = 3) {    ; No updates available that match your search
+			log("11", "Finished installing Windows Updates")
+			break
+		} else if (ErrorLevel = 4) {    ; Invalid criteria specified
+			log("11", "Internal program error - WUInstall exited with error code 4: Invalid criteria specified")
+			SoundBeep, 750, 1500
+			MsgBox, An internal program error has occurred. Please check the logs located at: %LogLoc%. This program has been terminated.
+			Pause
+		} else if (ErrorLevel = 5) {    ; Reboot/shutdown initialized successful
+			log("11", "Rebooting after Windows Updates")
+			SoundBeep, 750, 1500
+			MsgBox, Your computer is now rebooting, please log in again as qauser.
+			Pause
+		} else if (ErrorLevel = 6) {    ; Reboot/shutdown failed
+			log("11", "Failed to reboot after Windows Updates")
+			SoundBeep, 750, 1500
+			MsgBox, Your computer was unable to automatically reboot after the Windows Update has completed. Please reboot manually and log in again as qauser.
+			Pause
+		} else if (ErrorLevel = 7) {    ; Syntax error, wrong command
+			log("11", "Internal program error - WUInstall exited with error code 7: Syntax error, wrong command")
+			SoundBeep, 750, 1500
+			MsgBox, An internal program error has occurred. Please check the logs located at: %LogLoc%. This program has been terminated.
+			Pause
+		} else if (ErrorLevel = 8) {    ; Invalid version, expiration date reached
+			log("11", "Internal program error - WUInstall exited with error code 8: Invalid version, expiration date reached")
+			SoundBeep, 750, 1500
+			MsgBox, An internal program error has occurred. Please check the logs located at: %LogLoc%. This program has been terminated.
+			Pause
+		} else if (ErrorLevel = 10) {   ; Successful, reboot required
+			log("11", "Successfully installed Windows Updates, reboot was required")
+			SoundBeep, 750, 1500
+			MsgBox, Your computer is now rebooting, please log in again as qauser.
+			Shutdown, 6
+			Pause
+		} else if (ErrorLevel = 11) {   ; At least one error occurred, reboot required
+			log("11", "Installed Windows Updates with at least one error, reboot was required")
+			SoundBeep, 750, 1500
+			MsgBox, Your computer encountered at least one error while installing Windows Updates. The program will attempt to install them again.`n`nYour computer is now rebooting, please log in again as qauser.
+			Shutdown, 6
+			Pause
+		} else if (ErrorLevel = 12) {   ; Timeout reached
+			log("11", "Internal program error - WUInstall exited with error code 12: Timeout reached")
+			SoundBeep, 750, 1500
+			MsgBox, An internal program error has occurred. Please check the logs located at: %LogLoc%. This program has been terminated.
+			Pause
+		}
+	}
+	
+	adminStep = 12
+	updateLine(2, adminStep)
+}
+
+;;
+; Step 12 - Install OpenOffice
+; --------------------------------------
+;
+
+if (adminStep = 12) {	
+	RunWait, %BatchDir%\wget.exe -O ..\downloads\openoffice.exe http://sourceforge.net/projects/openofficeorg.mirror/files/4.0.0/binaries/en-US/Apache_OpenOffice_4.0.0_Win_x86_install_en-US.exe/download
+	log("12", "Downloaded OpenOffice")
+	Sleep, 1000
+	
+	Run, %DownloadDir%\openoffice.exe
+	Sleep, 5000
+	
+	Send, {Enter}
+	Sleep, 1000
+	
+	Send, %DownloadDir%\openoffice
+	Send, {Enter}
+	Sleep, 10000
+	log("12", "Unpacked the OpenOffice installer")
+	
+	RunWait, %BatchDir%\install-openoffice.bat
+	log("12", "Installed OpenOffice")
+	Sleep, 1000
+	
+	adminStep = 13
 	updateLine(2, adminStep)
 }
