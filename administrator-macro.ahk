@@ -369,7 +369,7 @@ if (adminStep = 13) {
 	Send, C:{Enter}
 	Send, cd %PROGRAMFILES%{Enter}
 	
-	if (OSType = 64-bit) {
+	if (OSType = "64-bit") {
 		Send, cd "..\Program Files (x86)"{Enter}
 	}
 	
@@ -650,5 +650,223 @@ if (adminStep = 19) {
 	log("19", "Enabled the Java plugin for Internet Explorer")
 	
 	adminStep = 20
+	updateLine(2, adminStep)
+}
+
+;;
+; Step 20 - Download and Install Reader
+; --------------------------------------
+;
+
+if (adminStep = 20) {
+	Run, cmd.exe, , , PID
+	Sleep, 1000
+	
+	Send, %SYSTEMDRIVE%{Enter}
+	Sleep, 500
+	
+	Send, netsh advfirewall firewall add rule name = "WinFTPIn" dir=in action=allow profile=any description="Windows FTP Client Allow In Traffic" program=%SYSTEMDRIVE%\Windows\System32\ftp.exe{Enter}
+	Sleep, 5000
+	Send, netsh advfirewall firewall add rule name = "WinFTPOut" dir=out action=allow profile=any description="Windows FTP Client Allow Out Traffic" program=%SYSTEMDRIVE%\Windows\System32\ftp.exe{Enter}
+	Sleep, 5000
+	
+	if (OSType = "64-bit") {
+		Send, netsh advfirewall firewall add rule name = "WinFTPx64In" dir=in action=allow profile=any description="Windows FTP x64 Client Allow In Traffic" program=%SYSTEMDRIVE%\Windows\SysWOW64\ftp.exe{Enter}
+		Sleep, 5000
+		Send, netsh advfirewall firewall add rule name = "WinFTPx64Out" dir=out action=allow profile=any description="Windows FTP x64 Client Allow Out Traffic" program=%SYSTEMDRIVE%\Windows\SysWOW64\ftp.exe{Enter}
+		Sleep, 5000
+	}
+	
+	log("20", "Enabled FTP downloads through the Windows firewall")
+	
+	Process, Close, %PID%
+	Sleep, 1000
+	
+	RunWait, %BatchDir%\download-install-reader.bat
+	
+	; Sometimes the download will not work (in a timely manner), so provide a timeout to try again
+	;Loop {
+	;	Process, WaitClose, %BatchDir%\download-install-reader.bat, 420 ; Wait for 7 minutes before timing out
+	;	
+	;	if (ErrorLevel = 0) { ; Horray!
+	;		break
+	;	} else {              ; Boo
+	;		Process, Close, %ErrorLevel%
+	;	}
+	;}
+	
+	Sleep, 1000
+	log("20", "Downloaded and installed Acrobat Reader")
+	
+	Run, cmd.exe, , , PID
+	Sleep, 1000
+	
+	Send, %SYSTEMDRIVE%{Enter}
+	Sleep, 500
+	
+	if (OSType = "64-bit") {
+		Send, cd "Program Files (x86)"{Enter}
+	} else {
+		Send, cd "Program Files"{Enter}
+	}
+	
+	Send, cd Adobe{Enter}
+	Send, cd Reader{Tab}
+	Sleep, 500
+	Send, {Enter}
+	Send, cd Reader{Enter}
+	Send, AcroRd32.exe{Enter}
+	Sleep, 10000
+	
+	Send, {Tab}
+	Sleep, 500
+	Send, {Enter}
+	Sleep, 5000
+	
+	MouseMoveRT(200, 70)
+	Click
+	Sleep, 500
+	
+	Send, !{F4}
+	log("20", "Accepted Acrobat Reader EULA")
+	
+	Process, Close, %PID%
+	Sleep, 1000
+	
+	adminStep = 21
+	updateLine(2, adminStep)
+}
+
+;;
+; Step 21 - Download and Install 7-Zip
+; --------------------------------------
+;
+
+if (adminStep = 21) {
+	RunWait, %BatchDir%\wget.exe http://downloads.sourceforge.net/sevenzip/7z920.exe -O %DownloadDir%\7zip.exe
+	Sleep, 2000
+	log("21", "Downloaded 7-zip")
+	
+	RunWait, %DownloadDir%\7zip.exe /S
+	Sleep, 2000
+	log("21", "Installed 7-zip")
+	
+	adminStep = 22
+	updateLine(2, adminStep)
+}
+
+;;
+; Step 22 - Disable System Restore
+; --------------------------------------
+;
+
+if (adminStep = 22) {
+	Run, cmd.exe, , , PID
+	Sleep, 1000
+	
+	Send, control /name Microsoft.System{Enter}
+	Sleep, 1000
+	
+	MouseMoveLT(100, 170)
+	Click
+	Sleep, 1000
+	
+	Send, {Tab}
+	Send, {Tab}
+	Sleep, 500
+	
+	MouseMoveCT(125, 350)
+	Click
+	Sleep, 1000
+	
+	Send, {Down}
+	Sleep, 500
+	
+	MouseMoveCT(150, 390)
+	Click
+	Sleep, 1000
+	
+	Send, {Tab}
+	Send, {Enter}
+	Sleep, 10000
+	Send, {Enter}
+	log("22", "Disabled system restore and deleted old restore points")
+	
+	Send, {Tab}
+	Send, {Enter}
+	Sleep, 500
+	Send, {Tab}
+	Send, {Enter}
+	Sleep, 500
+	
+	Send, !{F4}
+	Sleep, 500
+	Send, !{F4}
+	Sleep, 1000
+	
+	Process, Close, %PID%
+	Sleep, 1000
+
+	adminStep = 23
+	updateLine(2, adminStep)
+}
+
+;;
+; Step 23 - Delete Driver Folders
+; --------------------------------------
+;
+
+if (adminStep = 23) {
+	RunWait, %BatchDir%\delete-driver-folders.bat
+	Sleep, 1000
+	log("23", "Delete HP and Dell drivers folder")
+
+	adminStep = 24
+	updateLine(2, adminStep)
+}
+
+;;
+; Step 24 - Run a Disk Clean Up
+; --------------------------------------
+;
+
+if (adminStep = 24) {
+	Run, cmd.exe, , , PID
+	Sleep, 1000
+	
+; Disk Clean does best with a second sweep
+	Loop, 2 {
+		Send, cleanmgr /d %SYSTEMDRIVE%{Enter}
+		Sleep, 20000
+		
+		Loop, 4 {
+			Send, {Down}
+		}
+		
+		Sleep, 500
+		Send, {Space}
+		Sleep, 500
+		
+		Loop, 2 {
+			Send, {Down}
+		}
+		
+		Sleep, 500
+		Send, {Space}
+		Sleep, 1000
+		
+		MouseMoveRB(130, 30)
+		Click		
+		Sleep, 500
+		
+		Send, {Enter}
+		Sleep, 30000
+		log("24", "Performed a Disk Cleanup")
+	}
+
+	Process, Close, %PID%
+	Sleep, 1000
+	
+	adminStep = 25
 	updateLine(2, adminStep)
 }
