@@ -94,7 +94,7 @@ IfMsgBox, Yes
 	log("Preliminary", "Created program database file")
 	
 ; Create a scheduled task to show the desktop on startup and run the macro
-	FileAppend, echo Resuming %AppName%...`ntimeout /NOBREAK /t 10`n%A_ScriptFullPath%, %BatchDir%\start.bat
+	FileAppend, timeout /NOBREAK /t 10`n%A_ScriptFullPath%, %BatchDir%\start.bat
 	log("Preliminary", "Created batch file to start program on Windows log on")
 
 	Run, schtasks /create /tn ShowDesktop /tr %BatchDir%\show.scf /sc ONLOGON

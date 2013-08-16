@@ -136,8 +136,8 @@ if (adminStep = 6) {
 	Sleep, 1000
 	
 	Send, %BatchDir%\shortcut.exe /F:"%AppData%\Microsoft\Windows\Start Menu\Programs\Shutdown.lnk" /A:c /T:"shutdown" /P:"/s /t 0" /I:"%SystemRoot%\system32\SHELL32.dll,27"
-	Sleep, 3000
 	Send, {Enter}
+	Sleep, 3000
 	log("6", "Added a Shutdown icon to the Start Screen")
 	
 	Process, Close, %PID%
@@ -157,8 +157,8 @@ if (adminStep = 7) {
 	Sleep, 1000
 	
 	Send, %BatchDir%\shortcut.exe /F:"%AppData%\Microsoft\Windows\Start Menu\Programs\Restart.lnk" /A:c /T:"shutdown" /P:"/r /t 0" /I:"%SystemRoot%\system32\SHELL32.dll,238"
-	Sleep, 3000
 	Send, {Enter}
+	Sleep, 3000
 	log("7", "Added a Restart icon to the Start Screen")
 	
 	Process, Close, %PID%
@@ -354,5 +354,301 @@ if (adminStep = 12) {
 	Sleep, 1000
 	
 	adminStep = 13
+	updateLine(2, adminStep)
+}
+
+;;
+; Step 13 - Start OpenOffice
+; --------------------------------------
+;
+
+if (adminStep = 13) {
+	Run, cmd.exe, , , PID
+	Sleep, 1000
+	
+	Send, C:{Enter}
+	Send, cd %PROGRAMFILES%{Enter}
+	
+	if (OSType = 64-bit) {
+		Send, cd "..\Program Files (x86)"{Enter}
+	}
+	
+	Send, cd OpenOffice{Tab}{Enter}
+	Send, cd program{Enter}
+	Send, swriter{Enter}
+	Sleep, 10000
+	
+	Send, {Enter}
+	Sleep, 1000
+	Send, {Enter}
+	Sleep, 15000
+	
+	Send, !{F4}
+	Process, Close, %PID%
+	Sleep, 1000
+	log("13", "Opened and registered OpenOffice Writer")
+	
+	adminStep = 14
+	updateLine(2, adminStep)
+}
+
+;;
+; Step 14 - Pin Programs to Start Screen
+; --------------------------------------
+;
+
+if (adminStep = 14) {
+	Run, cmd.exe, , , PID
+	Sleep, 1000
+	
+	Send, %BatchDir%\shortcut /F:"%AppData%\Microsoft\Windows\Start Menu\Programs\regedit.lnk" /A:c /T:"%WINDIR%\regedit.exe"
+	Send, {Enter}
+	Sleep, 3000
+	log("14", "Added the Registry Editor to the Start Screen")
+	
+	Process, Close, %PID%
+	Sleep, 1000
+
+	Run, %BatchDir%\pin.vbs
+	Sleep, 3000
+	log("14", "Added Paint and Notepad to the Start Screen")
+	
+	RunWait, %BatchDir%\correct-start-menu-shortcuts.bat
+	Sleep, 3000
+	log("14", "Renamed newly added Start Screen items to friendly names")
+	
+	adminStep = 15
+	updateLine(2, adminStep)
+}
+
+;;
+; Step 15 - Setup MS Paint
+; --------------------------------------
+;
+
+if (adminStep = 15) {
+	Run, mspaint.exe
+	Sleep, 3000
+	
+	MouseMoveLT(30, 40)
+	Click
+	Sleep, 500
+	
+	MouseMoveLT(50, 160)
+	Sleep, 1000
+	
+	MouseMoveLT(50, 100)
+	Click Right
+	Sleep, 500
+	
+	MouseMoveLT(30, 10)
+	Click
+	Sleep, 500
+	log("15", "Added Save as JPEG to the Quick Access toolbar in Paint")
+	
+	MouseMoveRT(70, 10)
+	Click
+	Sleep, 500
+	log("15", "Maximized Paint")
+	
+	Send, !{F4}
+	Sleep, 1000
+	
+	adminStep = 16
+	updateLine(2, adminStep)
+}
+
+;;
+; Step 16 - Setup Notepad
+; --------------------------------------
+;
+
+if (adminStep = 16) {
+	Run, notepad.exe
+	Sleep, 1000
+	
+	Send, {Alt}
+	Send, o
+	Send, w
+	Sleep, 1000
+	log("16", "Enabled word wrap in Notepad")
+	
+	MouseMoveRT(70, 10)
+	Click
+	Sleep, 500
+	log("16", "Maximized Notepad")
+	
+	Send, !{F4}
+	Sleep, 1000
+	
+	adminStep = 17
+	updateLine(2, adminStep)
+}
+
+;;
+; Step 17 - Setup Internet Explorer
+; --------------------------------------
+;
+
+if (adminStep = 17) {
+	Run, %BatchDir%\internet-explorer-home-page.bat
+	Sleep, 5000
+	
+	Send, {Alt}
+	Sleep, 500
+	Send, t
+	Sleep, 500
+	Send, o
+	Sleep, 1000
+	
+	Send, {Tab}
+	Send, {Enter}
+	
+	Loop, 12 {
+		Send, {Tab}
+	}
+	
+	Send, {Enter}
+	Sleep, 1000
+	
+	Send, !{F4}
+	Sleep, 1000
+	log("17", "Set Internet Explorer homepage to google.com")
+	
+	Run, %BatchDir%\internet-explorer-search-engine.bat
+	Sleep, 5000
+	
+	MouseMoveCT(100, 500)
+	Click
+	Sleep, 3000
+	
+	Send, {Enter}
+	
+	Send, {Alt}
+	Sleep, 500
+	Send, t
+	Sleep, 500
+	Send, a
+	Sleep, 1000
+	
+	Send, {Down}
+	Sleep, 500
+	Send, {Right}
+	Sleep, 500
+	Send, {Down}
+	Sleep, 500
+	
+	Send, !u
+	Sleep, 500
+	Send, {Up}
+	Sleep, 500
+	Send, {Up}
+	Sleep, 500
+	Send, !m
+	Sleep, 500
+	
+	Send, !l
+	Sleep, 500
+	log("17", "Set Internet Explorer default search engine to Google and removed Bing")
+	
+	Send, !{F4}
+	Sleep, 1000
+	
+	adminStep = 18
+	updateLine(2, adminStep)
+}
+
+;;
+; Step 18 - Configure Folder Options
+; --------------------------------------
+;
+
+if (adminStep = 18) {
+	; Guess you can't modify the registry directly :-(
+	
+	;RegWrite, Reg_DWORD, HKEY_CURRENT_USER, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, Hidden, 1          ; Show hidden files, folders, and drives
+	;RegWrite, Reg_DWORD, HKEY_CURRENT_USER, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, HideFileExt, 0     ; Show file extensions
+	;RegWrite, Reg_DWORD, HKEY_CURRENT_USER, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, SharingWizardOn, 0 ; Disable Sharing Wizard
+	;RegWrite, Reg_DWORD, HKEY_CURRENT_USER, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, ShowSuperHidden, 1 ; Show protected OS files
+	
+	Run, cmd.exe
+	Sleep, 1000
+	
+	Send, powershell{Enter}
+	Sleep, 3000
+	
+	Send, Set-ItemProperty 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced' Hidden 1{Enter}
+	log("18", "Showing hidden files, folders, and drives")
+	Sleep, 3000
+	Send, Set-ItemProperty 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced' HideFileExt 0{Enter}
+	log("18", "Showing all file extensions")
+	Sleep, 3000
+	Send, Set-ItemProperty 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced' SharingWizardOn 0{Enter}
+	log("18", "Disabled Sharing Wizard")
+	Sleep, 3000
+	Send, Set-ItemProperty 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced' ShowSuperHidden 1{Enter}
+	log("18", "Showing protected operating system files")
+	Sleep, 3000
+	Send, exit{Enter}
+	Sleep, 1000
+	Send, exit{Enter}
+	Sleep, 1000
+
+	adminStep = 19
+	updateLine(2, adminStep)
+}
+
+;;
+; Step 19 - Download and Install Java
+; --------------------------------------
+;
+
+if (adminStep = 19) {
+	Run, %BatchDir%\internet-explorer-java-download.bat
+	Sleep, 5000
+	
+	MouseMoveCT(100, 285)
+	Click Right
+	Sleep, 500
+	
+	Loop, 4 {
+		Send, {Down}
+	}
+	
+	Send, {Enter}
+	Sleep, 5000
+	
+	Send, %DownloadDir%\java-32.exe{Enter}
+	Sleep, 300000 ; Wait 5 mins for download to complete
+	Send, !{F4}
+	log("19", "Java download complete")
+	
+	RunWait, %DownloadDir%\java-32.exe /s
+	log("19", "Java install complete")
+	
+	Run, %BatchDir%\internet-explorer.bat
+	Sleep, 5000
+	
+	Send, {Alt}
+	Sleep, 500
+	Send, t
+	Sleep, 500
+	Send, a
+	Sleep, 1000
+	
+	Send, {Right}
+	Sleep, 500
+	Send, {Up}
+	Sleep, 500
+	
+	Send, !e
+	Sleep, 500
+	Send, !l
+	Sleep, 500
+	Send, !{F4}
+	Sleep, 1000	
+	log("19", "Enabled the Java plugin for Internet Explorer")
+	
+	adminStep = 20
 	updateLine(2, adminStep)
 }
