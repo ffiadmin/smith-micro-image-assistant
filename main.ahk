@@ -3,7 +3,7 @@
 #Include lib.ahk
 
 ; Ensure that this program is being run as the administrator
-if (!A_IsAdmin) {
+if (!A_IsAdmin && A_Username != "standard") {
 	Run *RunAs %A_ScriptFullPath%
 	ExitApp
 }
@@ -22,7 +22,7 @@ Gui, -SysMenu
 
 ; Create the header
 Gui, Add, Progress, background333333 disabled h56 w440 x0 y0
-Gui, Add, Picture, h31 w33 x15 y13, assets/images/icon-large.jpg
+Gui, Add, Picture, h31 w33 x15 y13, %A_ScriptDir%\assets\images\icon-large.jpg
 Gui, Font, cWhite s12 w100, Verdana
 Gui, Add, Text, backgroundTrans x65 y19, %AppName%
 
@@ -74,6 +74,24 @@ Step3:
 if (step = "3") {
 	#Include administrator-gui.ahk
 	#Include administrator-macro.ahk
+	GoSub, Step4
+	return
+}
+
+; Load the Standard user page and macro script
+Step4:
+if (step = "4") {
+	#Include standard-gui.ahk
+	#Include standard-macro.ahk
+	GoSub, Step5
+	return
+}
+
+; Load the Finish page
+Step5:
+if (step = "5") {
+	#Include finish.ahk
+	return
 }
 
 ; Toggle the cursor inspector

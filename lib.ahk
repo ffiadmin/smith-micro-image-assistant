@@ -11,7 +11,10 @@ log(step, text) {
 	FileAppend, %step%`n%now%`n**********************************`n%text%`n`n`n, %LogLoc%
 }
 
-; Create a file
+; Add a tray tip
+tip(stepNum, text, totalNumSteps) {
+	TrayTip, Step %stepNum% of %totalNumSteps%, %text%, 20, 1
+}
 
 ; Fetch the Wizard Step Number from the configuration file
 fetchStep() {

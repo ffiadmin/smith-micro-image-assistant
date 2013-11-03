@@ -94,12 +94,12 @@ IfMsgBox, Yes
 	log("Preliminary", "Created program database file")
 	
 ; Create a scheduled task to show the desktop on startup and run the macro
-	FileAppend, timeout /NOBREAK /t 10`n%A_ScriptFullPath%, %BatchDir%\start.bat
+	FileAppend, timeout /NOBREAK /t 20`n%A_ScriptFullPath%, %BatchDir%\start.bat
 	log("Preliminary", "Created batch file to start program on Windows log on")
 
-	Run, schtasks /create /tn ShowDesktop /tr %BatchDir%\show.scf /sc ONLOGON
-	Run, schtasks /create /tn StartMacro /tr %BatchDir%\start.bat /sc ONLOGON
-	log("Preliminary", "Created two scheduled tasks to show the desktop and start the program on log on")
+	FileCopy, %BatchDir%\show.scf, %A_AppData%\Microsoft\Windows\Start Menu\Programs\Startup\show.scf
+	FileCopy, %BatchDir%\start.bat, %A_AppData%\Microsoft\Windows\Start Menu\Programs\Startup\start.bat
+	log("Preliminary", "Added two files to the start up folder to show the desktop and start the program on log on")
 
 ; Share the data with the application
 	adminStep = 1

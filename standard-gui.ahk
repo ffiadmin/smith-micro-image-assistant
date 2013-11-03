@@ -8,20 +8,25 @@ GuiControl, Hide, SetupHead
 GuiControl, +cGreen, SetupHead
 GuiControl, Show, SetupHead
 
-; Highlight the "Administrator" item on the step menu
+; Mark the "Administrator" item on the step menu as completed
 GuiControl, Hide, AdminHead
-GuiControl, +cBlack, AdminHead
+GuiControl, +cGreen, AdminHead
 GuiControl, Show, AdminHead
-GuiControl, Move, Highlight1, w124 x137
-GuiControl, Move, Highlight2, w124 x137
-GuiControl, Move, Highlight3, w124 x137
 
-if (adminStep = 1) {
+; Highlight the "Standard" item on the step menu
+GuiControl, Hide, StandardHead
+GuiControl, +cBlack, StandardHead
+GuiControl, Show, StandardHead
+GuiControl, Move, Highlight1, w82 x270
+GuiControl, Move, Highlight2, w82 x270
+GuiControl, Move, Highlight3, w82 x270
+
+if (standardStep = 1) {
 	; Create a new block to extend the visual size of the background near the bottom of the GUI
 	Gui, Add, Progress, backgroundCCCCCC disabled h200 w440 x0 y570
 	
 	; Add the body text to the GUI window
-	Gui, Add, Text, backgroundTrans vAdminText w400 x20 y120, This program will now set up the administrator account.`n`nWhile the program is running, DO NOT:`n`n`n         Move the mouse.`n`n         Press the keyboard buttons.`n`n         Power off or unplug the machine.`n`n         Unplug the Ethernet cable.`n`n`n`While the program is running, it may sound an alarm to:`n`n`n         Prompt you to log in as qauser or the standard           user after a restart.`n`n         Notify you that the program is finished.
+	Gui, Add, Text, backgroundTrans vAdminText w400 x20 y120, This program will now set up the standard user account.`n`nWhile the program is running, DO NOT:`n`n`n         Move the mouse.`n`n         Press the keyboard buttons.`n`n         Power off or unplug the machine.`n`n         Unplug the Ethernet cable.`n`n`n`While the program is running, it may sound an alarm to:`n`n`n         Prompt you to log in as qauser or the standard           user after a restart.`n`n         Notify you that the program is finished.
 	
 	; Add the "X" icons beside the first four unordered list items
 	Gui, Add, Picture, h21 vRedX6 w21 x35 y229, %A_ScriptDir%\assets\images\x.jpg
